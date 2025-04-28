@@ -57,11 +57,16 @@ export class CategoriesService {
   }
 
   find(id: string): Promise<Category> {
-    return this.categoryRepository.findOneBy({ id });
+    return this.categoryRepository.findOne({ where: { id }, relations: ["products"] })
   }
 
   async remove(id: string): Promise<{ message: string }> {
     const category = await this.find(id)
+    
+    if (category.products?.length > 0) {
+      throw new ConflictException('Cannot delete category because it has many products.');
+    }
+
     if (!category) throw new NotFoundException(`Category with ID ${id} not found`);
     await this.categoryRepository.delete(id);
     return { message: "Category deleted successfully" }
