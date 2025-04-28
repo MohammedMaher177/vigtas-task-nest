@@ -36,7 +36,7 @@ export class CategoriesService {
     return this.categoryRepository.find({ relations: ["products"] });
   }
 
-  async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
+  async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<ICategory> {
     const category = await this.find(id);
 
     if (!category) {
@@ -56,7 +56,7 @@ export class CategoriesService {
     return this.categoryRepository.save(category);
   }
 
-  find(id: string): Promise<Category> {
+  find(id: string): Promise<ICategory> {
     return this.categoryRepository.findOne({ where: { id }, relations: ["products"] })
   }
 
