@@ -1,18 +1,23 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
     imports: [
-        TypeOrmModule.forRoot({
-            type: 'mysql',
-            host: 'localhost',
-            port: 3306,
-            username: 'root',
-            password: 'wk8tJSsz5QcmvbC!',
-            database: 'vigtas_task',
-            entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-            synchronize: true,
-        }),
+        TypeOrmModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => ({
+                type: 'mysql',
+                host: 'localhost',
+                port: 3306,
+                username: configService.get<string>('DB_USER'),
+                password: configService.get<string>('DB_PASSWORD'),
+                database: configService.get<string>('DB_NAME'),
+                entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+                synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true),
+            }),
+        })
     ],
 })
 export class DatabaseModule { }

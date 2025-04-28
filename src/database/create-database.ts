@@ -1,14 +1,17 @@
+import * as dotenv from 'dotenv';
 import { createConnection } from 'mysql2/promise';
+
+dotenv.config();
 
 async function createDatabase() {
     const connection = await createConnection({
         host: 'localhost',
         port: 3306,
-        user: 'root',
-        password: 'wk8tJSsz5QcmvbC!',
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
     });
 
-    const databaseName = 'vigtas_task';
+    const databaseName = process.env.DB_NAME;
 
     await connection.query(`CREATE DATABASE IF NOT EXISTS \`${databaseName}\`;`);
     console.log(`Database "${databaseName}" is ready ✅`);
