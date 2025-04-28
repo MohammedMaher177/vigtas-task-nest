@@ -9,7 +9,7 @@ export class Product {
   @Column()
   name: string;
 
-  @Column('decimal')
+  @Column('decimal', { precision: 10, scale: 2 })
   price: number;
 
   @ManyToOne(() => Category, (category) => category.products)

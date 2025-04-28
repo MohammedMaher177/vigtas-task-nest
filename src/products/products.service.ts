@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Product } from './entity';
 import { CreateProductDto, UpdateProductDto } from './DTOs';
 import { CategoriesService } from 'src/categories/categories.service';
+import { IProduct } from './interfaces';
 
 
 @Injectable()
@@ -53,8 +54,8 @@ export class ProductsService {
 
 
 
-    async find(id: string): Promise<Product> {
-        const product = await this.find(id);
+    async find(id: string): Promise<IProduct> {
+        const product = await this.productRepository.findOneBy({ id });
         if (!product) {
             throw new NotFoundException(`Product with ID ${id} not found`);
         }
@@ -67,5 +68,12 @@ export class ProductsService {
 
     async findByCategory(categoryId: string): Promise<Product[]> {
         return this.productRepository.find({ where: { category: { id: categoryId } } });
+    }
+
+
+    async remove(id: string): Promise<void> {
+        const product = await this.find(id)
+        if (!product) throw new NotFoundException(`Product with ID ${id} not found`);
+        await this.productRepository.delete(id);
     }
 }

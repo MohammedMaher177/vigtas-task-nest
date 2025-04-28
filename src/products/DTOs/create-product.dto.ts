@@ -1,12 +1,12 @@
 import { Transform } from 'class-transformer';
-import { IsString, IsDecimal, IsUUID } from 'class-validator';
+import { IsString, IsUUID, IsNumber } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
   @Transform(({ value }) => value.trim())
   name: string;
 
-  @IsDecimal()
+  @IsNumber()
   price: number;
 
   @IsUUID()
