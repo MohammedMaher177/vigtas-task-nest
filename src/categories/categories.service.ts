@@ -33,7 +33,7 @@ export class CategoriesService {
   }
 
   findAll(): Promise<ICategory[]> {
-    return this.categoryRepository.find();
+    return this.categoryRepository.find({ relations: ["products"] });
   }
 
   async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
@@ -62,7 +62,7 @@ export class CategoriesService {
 
   async remove(id: string): Promise<{ message: string }> {
     const category = await this.find(id)
-    
+
     if (category.products?.length > 0) {
       throw new ConflictException('Cannot delete category because it has many products.');
     }
