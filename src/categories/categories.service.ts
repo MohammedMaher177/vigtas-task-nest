@@ -61,6 +61,8 @@ export class CategoriesService {
   }
 
   async remove(id: string): Promise<void> {
+    const category = await this.find(id)
+    if (!category) throw new NotFoundException(`Category with ID ${id} not found`);
     await this.categoryRepository.delete(id);
   }
 }
