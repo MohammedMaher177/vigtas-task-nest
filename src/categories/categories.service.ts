@@ -26,10 +26,13 @@ export class CategoriesService {
   }
 
   async findByName(name: string): Promise<ICategory | undefined> {
-    return this.categoryRepository
+    const category = await this.categoryRepository
       .createQueryBuilder('category')
       .where('LOWER(category.name) = LOWER(:name)', { name })
       .getOne();
+
+    if (!category) throw new NotFoundException(`Category with name ${name} not found`);
+    return category
   }
 
   findAll(): Promise<ICategory[]> {
@@ -38,10 +41,6 @@ export class CategoriesService {
 
   async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<ICategory> {
     const category = await this.find(id);
-
-    if (!category) {
-      throw new NotFoundException(`Category with ID ${id} not found`);
-    }
 
     if (updateCategoryDto.name) {
       const existingCategory = await this.findByName(updateCategoryDto.name);
@@ -56,8 +55,10 @@ export class CategoriesService {
     return this.categoryRepository.save(category);
   }
 
-  find(id: string): Promise<ICategory> {
-    return this.categoryRepository.findOne({ where: { id }, relations: ["products"] })
+  async find(id: string): Promise<ICategory> {
+    const category = await this.categoryRepository.findOne({ where: { id }, relations: ["products"] })
+    if (!category) throw new NotFoundException(`Category with ID ${id} not found`);
+    return category
   }
 
   async remove(id: string): Promise<{ message: string }> {
@@ -67,7 +68,6 @@ export class CategoriesService {
       throw new ConflictException('Cannot delete category because it has many products.');
     }
 
-    if (!category) throw new NotFoundException(`Category with ID ${id} not found`);
     await this.categoryRepository.delete(id);
     return { message: "Category deleted successfully" }
   }

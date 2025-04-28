@@ -21,10 +21,7 @@ export class ProductsService {
         const { categoryId, ...productData } = createProductDto;
 
         const category = await this.categoryService.find(categoryId);
-        if (!category) {
-            throw new NotFoundException(`Category with ID ${categoryId} not found`);
-        }
-
+ 
         const product = this.productRepository.create({ ...productData, category });
         return this.productRepository.save(product);
     }
@@ -33,18 +30,11 @@ export class ProductsService {
     async update(id: string, updateProductDto: UpdateProductDto): Promise<IProduct> {
         const product = await this.find(id);
 
-        if (!product) {
-            throw new NotFoundException(`Product with ID ${id} not found`);
-        }
-
         const { categoryId, ...productData } = updateProductDto;
 
         if (categoryId) {
             const category = await this.categoryService.find(categoryId);
 
-            if (!category) {
-                throw new NotFoundException(`Category with ID ${categoryId} not found`);
-            }
             product.category = category;
         }
 
@@ -71,7 +61,6 @@ export class ProductsService {
 
     async remove(id: string): Promise<{ message: string }> {
         const product = await this.find(id)
-        if (!product) throw new NotFoundException(`Product with ID ${id} not found`);
         await this.productRepository.delete(id);
         return { message: "Product deleted successfully" }
     }

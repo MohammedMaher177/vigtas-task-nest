@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsString, IsUUID, IsNumber } from 'class-validator';
+import { IsString, IsUUID, IsNumber, Min } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -7,6 +7,7 @@ export class CreateProductDto {
   name: string;
 
   @IsNumber()
+  @Min(1)
   price: number;
 
   @IsUUID()
