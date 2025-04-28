@@ -17,7 +17,7 @@ export class ProductsService {
 
     ) { }
 
-    async create(createProductDto: CreateProductDto): Promise<Product> {
+    async create(createProductDto: CreateProductDto): Promise<IProduct> {
         const { categoryId, ...productData } = createProductDto;
 
         const category = await this.categoryService.find(categoryId);
@@ -30,7 +30,7 @@ export class ProductsService {
     }
 
 
-    async update(id: string, updateProductDto: UpdateProductDto): Promise<Product> {
+    async update(id: string, updateProductDto: UpdateProductDto): Promise<IProduct> {
         const product = await this.find(id);
 
         if (!product) {
@@ -60,11 +60,11 @@ export class ProductsService {
         return product;
     }
 
-    async findAll(): Promise<Product[]> {
+    async findAll(): Promise<IProduct[]> {
         return this.productRepository.find({ relations: ["category"] });
     }
 
-    async findByCategory(categoryId: string): Promise<Product[]> {
+    async findByCategory(categoryId: string): Promise<IProduct[]> {
         return this.productRepository.find({ where: { category: { id: categoryId } } });
     }
 
