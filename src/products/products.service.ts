@@ -52,10 +52,8 @@ export class ProductsService {
         return this.productRepository.save(product);
     }
 
-
-
     async find(id: string): Promise<IProduct> {
-        const product = await this.productRepository.findOneBy({ id });
+        const product = await this.productRepository.findOne({ where: { id }, relations: ['category'] });
         if (!product) {
             throw new NotFoundException(`Product with ID ${id} not found`);
         }
@@ -63,7 +61,7 @@ export class ProductsService {
     }
 
     async findAll(): Promise<Product[]> {
-        return this.productRepository.find();
+        return this.productRepository.find({ relations: ["category"] });
     }
 
     async findByCategory(categoryId: string): Promise<Product[]> {
@@ -75,6 +73,6 @@ export class ProductsService {
         const product = await this.find(id)
         if (!product) throw new NotFoundException(`Product with ID ${id} not found`);
         await this.productRepository.delete(id);
-        return { message: "Category deleted successfully" }
+        return { message: "Product deleted successfully" }
     }
 }
